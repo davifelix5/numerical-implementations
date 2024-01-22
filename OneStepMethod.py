@@ -9,7 +9,6 @@ uma variável de estado (com exemplos)
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 from NumericalMethod import NumericalMethod, convert_dict_to_latex
 
 """
