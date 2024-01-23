@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import plotly.graph_objs as go
+import plotly.express as px
 import numpy as np
 
 """
@@ -101,7 +103,7 @@ class NumericalMethod:
             plt.legend()
         plt.show()
 
-    def plot_steps(self, n_0: int, r: int, n_loops: int):
+    def plot_steps(self, n_0: int, r: int, n_loops: int, y_e: callable = None):
         """
         Plota a aproximação numérica para diferentes valores de n 
         n_0: valor inicial de n
@@ -116,7 +118,10 @@ class NumericalMethod:
             n = n_0*(r**i)
             self.n = n
             self.run()
-            plt.plot(self.t, self.y, label=f'n={i}')
+            plt.plot(self.t, self.y, label=f'n={i}', linestyle='--')
+        if y_e:
+            x = np.linspace(self.t_0, self.T, 1000)
+            plt.plot(x, y_e(x), color='black', alpha=0.8, label='$y_e$')
         plt.legend()
         plt.show()
 

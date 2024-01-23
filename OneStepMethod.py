@@ -90,16 +90,29 @@ if __name__ == '__main__':
     print('\nTabela de convergência com solução exata de 2.4 em T=1')
     convert_dict_to_latex(euler.convergence_table_with_exact_solution(r=2, n_0=64, n_loops=4, exact_value_on_T=y_e(T)))
     
-    ######### EXEMPLO 3 - Equação manufaturada ###################
+    #### Exemplo 3.1 - Equação manufaturada com Euler ###
     y_e = lambda t: 3*(t**2)*np.cos(t)*np.exp(-2*t)
-    T = 5
+    f = lambda t, y: -3*np.exp(-2*t)*t*(t*np.sin(t)+2*(t-1)*np.cos(t))
+    T = 10
     y_0 = 0
-    rkc = RKC(T, y_0, lambda t, y: -3*np.exp(-2*t)*t*(t*np.sin(t)+2*(t-1)*np.cos(t)))
-    print('\nTabela de convergêmcia para o exemplo 3 em T=5')
+    euler2 = EulerMethod2(T, y_0, f)
+    print('\nTabela de convergência para o exemplo 3 em T=5')
+    convert_dict_to_latex(euler2.convergence_table_with_exact_solution(
+        r=2, n_0=16, n_loops=8, exact_value_on_T=y_e(T)
+    ))
+    euler2.plot_solutions(exact_function=y_e)
+   
+    # Plot para soluções usando diferentes valores de n
+    euler2.plot_steps(n_0=2, r=2, n_loops=9, y_e =y_e)
+
+    ######### EXEMPLO 3 - Equação manufaturada ###################
+    T = 20
+    rkc = RKC(T, y_0, f)
+    print('\nTabela de convergência para o exemplo 3 em T=5')
     convert_dict_to_latex(rkc.convergence_table_with_exact_solution(
         r=2, n_0=16, n_loops=8, exact_value_on_T=y_e(T)
     ))
     rkc.plot_solutions(exact_function=y_e)
    
     # Plot para soluções usando diferentes valores de n
-    rkc.plot_steps(n_0=2, r=2, n_loops=9)
+    rkc.plot_steps(n_0=2, r=2, n_loops=9, y_e =y_e)
