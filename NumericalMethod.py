@@ -118,11 +118,18 @@ class NumericalMethod:
             n = n_0*(r**i)
             self.n = n
             self.run()
-            plt.plot(self.t, self.y, label=f'n={i}', linestyle='--')
+            plt.plot(self.t, self.y, label=f'n={n}', linestyle='--')
         if y_e:
             x = np.linspace(self.t_0, self.T, 1000)
             plt.plot(x, y_e(x), color='black', alpha=0.8, label='$y_e$')
         plt.legend()
+        plt.show()
+
+    def plot_f_approx(self):
+        plt.title("Aproximação da função $f(t, y(t))$")
+        plt.xlabel("t")
+        plt.ylabel("y(t)")
+        plt.plot(self.t, self.f(np.array(self.t), np.array(self.y)))
         plt.show()
 
 
