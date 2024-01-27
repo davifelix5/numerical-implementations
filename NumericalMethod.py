@@ -1,6 +1,4 @@
-import matplotlib.pyplot as plt
 import plotly.graph_objs as go
-import plotly.express as px
 import numpy as np
 from typing import Callable, Union
 
@@ -96,15 +94,35 @@ class NumericalMethod:
         """
         self.n = self.n0  # Volta ao intervalo de discretização original
         self.run()
-        plt.title("Solução encontrada para a equação")
-        plt.ylabel("y(t)")
-        plt.xlabel("t")
-        plt.plot(self.t, self.y, label="y(t)")
+        figures = []
+        figures.append(
+                go.Scatter(
+                    name='Solução numérica',
+                    x=self.t,
+                    y=self.y,
+                    mode='lines',
+                    showlegend=True,
+                )
+            )
         if exact_function:
             x = np.linspace(self.t_0, self.T, 1000)
-            plt.plot(x, exact_function(x), label="$y_e(t)", color='red', linestyle='--', alpha=0.6)
-            plt.legend()
-        plt.show()
+            figures.append(go.Scatter(
+                name='Exact Solution',
+                x=x,
+                y=exact_function(x),
+                mode='lines',
+                showlegend=True,
+                line=dict(dash='dash'),
+                opacity=0.8
+            ))
+        fig = go.Figure(figures)
+        fig.update_layout(
+            yaxis_title='y(t)',
+            title='Aproximação da Solução numérica para a equação',
+            width=850,
+            height=500
+        )
+        fig.show()
 
     def plot_steps(self, n_0: int, r: int, n_loops: int, y_e: Union[Callable, None]=None):
         """
@@ -113,27 +131,44 @@ class NumericalMethod:
         r: razão com a qual n aumenta
         n_loops: quantidade de plots e aproximações a serem feitas
         """
-        plt.figure(figsize=(10,8))
-        plt.title("Sucessivas aproximações numéricas para diferentes passos de integração")
-        plt.ylabel("y(t)")
-        plt.xlabel("t")
+        figures = []
         for i in range(n_loops):
             n = n_0*(r**i)
             self.n = n
             self.run()
-            plt.plot(self.t, self.y, label=f'n={n}', linestyle='--')
+            figures.append(go.Scatter(
+                name=f'n={n}',
+                x=self.t,
+                y=self.y,
+                mode='lines',
+                showlegend=True,
+                line=dict(dash='dash')
+            ))
         if y_e:
             x = np.linspace(self.t_0, self.T, 1000)
-            plt.plot(x, y_e(x), color='black', alpha=0.8, label='$y_e$')
-        plt.legend()
-        plt.show()
+            figures.append(go.Scatter(
+                name='y_e',
+                x=x,
+                y=y_e(x),
+                mode='lines',
+                showlegend=True
+            ))
+
+        fig = go.Figure(figures)
+        fig.update_layout(
+                title='Sucessivas aproximações numéricas para diferentes passos de integração',
+                yaxis_title='y(t)',
+                width=850,
+                height=500
+        )
+        fig.show()
+        return fig
 
     def plot_f_approx(self):
-        plt.title("Aproximação da função $f(t, y(t))$")
-        plt.xlabel("t")
-        plt.ylabel("y(t)")
-        plt.plot(self.t, self.f(np.array(self.t), np.array(self.y)))
-        plt.show()
+        fig = go.Figure()
+        fig.update_layout(width=800, height=500, title='Aproximação para f(t,y(t))', yaxis_title='~f(t,y(t))', xaxis_title='t')
+        fig.add_scatter(x=self.t, y=self.f(np.array(self.t), np.array(self.y)), mode='lines')
+        fig.show()
 
 
 def convert_dict_to_latex(convergence_data: list):
