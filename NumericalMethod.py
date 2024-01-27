@@ -2,12 +2,13 @@ import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 import plotly.express as px
 import numpy as np
+from typing import Callable, Union
 
 """
 Classe para implementar e avaliar um método numérico qualquer
 """
 class NumericalMethod:
-    def __init__(self, T: float, y_0: float, f: callable, n: int = 1000, t_0: float = 0):
+    def __init__(self, T: float, y_0: float, f: Callable, n: int = 1000, t_0: float = 0):
         """
         n: número de pontos na partição uniforme de discretização
         t_0: tempo inicial
@@ -20,6 +21,8 @@ class NumericalMethod:
         self.f = f
         self.n = self.n0 = n
         self.y_0 = y_0
+        self.y = [self.y_0]
+        self.t = [self.t_0]
 
     def run(self):
         """
@@ -86,7 +89,7 @@ class NumericalMethod:
                 logs.append(np.log(q)/np.log(r))
         return list(zip(n_values, h_values, numerical_solutions, logs))
     
-    def plot_solutions(self, exact_function: callable=None):
+    def plot_solutions(self, exact_function: Union[Callable, None]=None):
         """
         Função que plota a solução numérica encontrada pelo método. Caso seja fornecida uma solução exata,
         ela também é plotada com sua respetiva leganda.
@@ -103,7 +106,7 @@ class NumericalMethod:
             plt.legend()
         plt.show()
 
-    def plot_steps(self, n_0: int, r: int, n_loops: int, y_e: callable = None):
+    def plot_steps(self, n_0: int, r: int, n_loops: int, y_e: Union[Callable, None]=None):
         """
         Plota a aproximação numérica para diferentes valores de n 
         n_0: valor inicial de n

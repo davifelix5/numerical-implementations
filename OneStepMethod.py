@@ -8,8 +8,7 @@ uma variável de estado (com exemplos)
 ------------------------------------------------------------------
 """
 
-import numpy as np
-from NumericalMethod import NumericalMethod, convert_dict_to_latex
+from NumericalMethod import NumericalMethod
 
 """
 Classe genérica para um método explícito de passo único capaz de resolver uma variável de estado
