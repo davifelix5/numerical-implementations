@@ -95,33 +95,17 @@ class NumericalMethod:
         self.n = self.n0  # Volta ao intervalo de discretização original
         self.run()
         figures = []
-        figures.append(
-                go.Scatter(
-                    name='Solução numérica',
-                    x=self.t,
-                    y=self.y,
-                    mode='lines',
-                    showlegend=True,
-                )
-            )
+        figures.append(go.Scatter(name='Solução numérica', x=self.t, y=self.y,
+                           mode='lines', showlegend=True))
         if exact_function:
             x = np.linspace(self.t_0, self.T, 1000)
-            figures.append(go.Scatter(
-                name='Exact Solution',
-                x=x,
-                y=exact_function(x),
-                mode='lines',
-                showlegend=True,
-                line=dict(dash='dash'),
-                opacity=0.8
-            ))
+            figures.append(go.Scatter(name='Exact Solution', x=x, y=exact_function(x),
+                                      mode='lines', showlegend=True, line=dict(dash='dash'),
+                                      opacity=0.8))
         fig = go.Figure(figures)
-        fig.update_layout(
-            yaxis_title='y(t)',
-            title='Aproximação da Solução numérica para a equação',
-            width=850,
-            height=500
-        )
+        fig.update_layout(yaxis_title='y(t)',
+                          title='Aproximação da Solução numérica para a equação',
+                          width=850, height=500)
         fig.show()
 
     def plot_steps(self, n_0: int, r: int, n_loops: int, y_e: Union[Callable, None]=None):
@@ -136,31 +120,15 @@ class NumericalMethod:
             n = n_0*(r**i)
             self.n = n
             self.run()
-            figures.append(go.Scatter(
-                name=f'n={n}',
-                x=self.t,
-                y=self.y,
-                mode='lines',
-                showlegend=True,
-                line=dict(dash='dash')
-            ))
+            figures.append(go.Scatter(name=f'n={n}', x=self.t, y=self.y, mode='lines',
+                                      showlegend=True, line=dict(dash='dash')))
         if y_e:
             x = np.linspace(self.t_0, self.T, 1000)
-            figures.append(go.Scatter(
-                name='y_e',
-                x=x,
-                y=y_e(x),
-                mode='lines',
-                showlegend=True
-            ))
-
+            figures.append(go.Scatter(name='y_e', x=x, y=y_e(x),
+                                      mode='lines', showlegend=True))
         fig = go.Figure(figures)
-        fig.update_layout(
-                title='Sucessivas aproximações numéricas para diferentes passos de integração',
-                yaxis_title='y(t)',
-                width=850,
-                height=500
-        )
+        fig.update_layout(title='Sucessivas aproximações numéricas para diferentes passos de integração',
+                          yaxis_title='y(t)', width=850, height=500)
         fig.show()
         return fig
 
