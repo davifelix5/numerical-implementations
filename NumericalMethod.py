@@ -3,12 +3,13 @@ import numpy as np
 import numpy.typing as npt
 from typing import Callable, List, Union
 
+float_array = Union[npt.NDArray, np.float64, float]
+
 """
 Classe para implementar e avaliar um método numérico qualquer
 """
 class NumericalMethod:
-    def __init__(self, T: float, y_0: npt.NDArray, f: Callable[[npt.NDArray[np.float64], npt.NDArray[np.float64]], npt.NDArray[np.float64]],
-                 n: int = 1000, t_0: float = 0):
+    def __init__(self, T: float, y_0: npt.NDArray, f: Callable[[float_array, float_array], float_array], n: int = 1000, t_0: float = 0):
         """
         n: número de pontos na partição uniforme de discretização
         t_0: tempo inicial
@@ -140,7 +141,7 @@ class NumericalMethod:
             
         for k in range(amount_of_state_vars):
             if y_e:
-                x = np.linspace(self.t_0, self.T, 1000)
+                x = np.linspace(self.t_0, self.T, self.n)
                 plots[k].append(go.Scatter(name='y_e', x=x, y=y_e[k](x),
                                           mode='lines', showlegend=True))
             fig = go.Figure(plots[k])
