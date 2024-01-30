@@ -9,13 +9,14 @@ uma variável de estado (com exemplos)
 """
 
 from NumericalMethod import NumericalMethod
+import numpy.typing as npt
 
 """
 Classe genérica para um método explícito de passo único capaz de resolver uma variável de estado
 """
 class OneStepMethod(NumericalMethod):
 
-    def phi(self, t: float, y: float):
+    def phi(self, t: float, y: npt.NDArray):
         """
         Função Phi do método de passdo único explícito
         """
