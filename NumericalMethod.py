@@ -127,6 +127,7 @@ class NumericalMethod:
         """
         amount_of_state_vars = self.y_0.shape[0]
         plots = [[] for _ in range(amount_of_state_vars)]
+        dashs = ['dash', 'dot', 'dashdot']
 
         for i in range(n_loops):
             n = n_0*(r**i)
@@ -137,13 +138,13 @@ class NumericalMethod:
 
             for k, result in enumerate(state_results):
                 plots[k].append(go.Scatter(name=f'n={n}', x=self.t, y=result, mode='lines',
-                                              showlegend=True, line=dict(dash='dash')))
+                                              showlegend=True, line=dict(dash=dashs[i%3], color='black', shape='linear')))
             
         for k in range(amount_of_state_vars):
             if y_e:
                 x = np.linspace(self.t_0, self.T, self.n)
                 plots[k].append(go.Scatter(name='y_e', x=x, y=y_e[k](x),
-                                          mode='lines', showlegend=True))
+                                          mode='lines', showlegend=True, line=dict(color='black')))
             fig = go.Figure(plots[k])
             fig.update_layout(title=f'Sucessivas aproximações numéricas para diferentes passos de integração (var de estado {k+1})',
                           yaxis_title='y(t)', width=850, height=500)
