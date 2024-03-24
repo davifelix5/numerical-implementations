@@ -2,34 +2,24 @@ import numpy as np
 import plotly.graph_objs as go
 
 class Spline:
-    def __init__(self, x0: np.float64, xn: np.float64, n: np.float64, f: callable, f_linha: callable):
-        self.x0 = x0
-        self.xn = xn
-        self.n = n
-        self.f = f
-        self.f_linha = f_linha
-        self.x = np.zeros((n+1,))
-        self.a = np.zeros((n+1,))
-        self.b = np.zeros((n+1,))
-        self.c = np.zeros((n+1,))
-        self.d = np.zeros((n+1,))
-        self.h = np.zeros((n,))
-        self.l = np.zeros((n+1,))
-        self.u = np.zeros((n+1,))
-        self.z = np.zeros((n+1,))
+    def __init__(self, x: np.array, y: np.array, h: np.float64, fpo: np.float64, fpn: np.float64):
+        self.n = x.shape[0] - 1
+        self.fpo = fpo
+        self.fpn = fpn
+        self.x = x
+        self.y = y
+        self.a = np.zeros((self.n+1,))
+        self.b = np.zeros((self.n+1,))
+        self.c = np.zeros((self.n+1,))
+        self.d = np.zeros((self.n+1,))
+        self.h = np.zeros((self.n,))
+        self.l = np.zeros((self.n+1,))
+        self.u = np.zeros((self.n+1,))
+        self.z = np.zeros((self.n+1,))
         self.alphas = np.zeros((self.n+1,))
         self.fpo = np.float64()
         self.fpn = np.float64()
-        self.h = (self.xn - self.x0)/self.n
-
-
-    def divide_inteval(self):
-        for i in range(self.n + 1):
-            self.x[i] = self.x0 + (self.h * i)
-
-    def calculate_a(self):
-        for i in range(self.n + 1):
-            self.a[i] = self.f(self.x[i])
+        self.h = h
 
     def calculate_alphas(self):
         self.alphas[0] = (3*(self.a[1] - self.a[0])/self.h) - 3*self.fpo
@@ -64,8 +54,7 @@ class Spline:
             self.d[j] = (self.c[j + 1] - self.c[j])/3*self.h
 
     def interpolate(self):
-        self.divide_inteval()
-        self.calculate_a()
+        self.a = self.y
         self.calculate_alphas()
         self.solve_linear_system()
         self.finish_parameters()
@@ -77,17 +66,17 @@ class Spline:
         indice = ((xi - self.x[0]) // self.h).astype(int)
         return self.sj(xi, indice)
 
-    def plot(self, N=10000):
-        x_values = np.linspace(self.x0, self.xn, N)
+    def plot(self, exact_f=None, N=10000):
+        x_values = np.linspace(self.x[0], self.x[self.n], N)
         y_values = self.s(x_values)
         plots = [
             go.Scatter(name=f'interpolação', x=x_values, y=y_values, mode='lines',
                         showlegend=True)
         ]
         
-        if self.f is not None:
+        if exact_f is not None:
             plots.append(
-                go.Scatter(name=f'função exata', x=x_values, y=self.f(x_values), mode='lines',
+                go.Scatter(name=f'função exata', x=x_values, y=exact_f(x_values), mode='lines',
                         showlegend=True, line=dict(dash='dash'))
             )
 

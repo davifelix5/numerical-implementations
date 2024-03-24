@@ -184,7 +184,7 @@ class NumericalMethod:
             
         for k in range(amount_of_state_vars):
             if y_e:
-                x = np.linspace(self.t_0, self.T, self.n)
+                x = np.linspace(self.t_0, self.T, self.n0)
                 plots[k].add_trace(go.Scatter(name=f'{self.var_names[k]}(t) exata', x=x, y=y_e[k](x),
                                           mode='lines', showlegend=True, line=dict(color='black')))
             plots[k].update_layout(title=f'Aproximações numéricas de {self.var_names[k]}(t)',
