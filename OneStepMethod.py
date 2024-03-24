@@ -26,7 +26,6 @@ class OneStepMethod(NumericalMethod):
         """
         Função que executa o laço tempora do Método
         """
-        print(self.n)
         self.y = [self.y_0]
         self.t = [self.t_0]
         for k in range(self.n):
