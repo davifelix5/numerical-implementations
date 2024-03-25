@@ -12,18 +12,16 @@ class Spline:
         self.b = np.zeros((self.n+1,))
         self.c = np.zeros((self.n+1,))
         self.d = np.zeros((self.n+1,))
-        self.h = np.zeros((self.n,))
         self.l = np.zeros((self.n+1,))
         self.u = np.zeros((self.n+1,))
         self.z = np.zeros((self.n+1,))
         self.alphas = np.zeros((self.n+1,))
-        self.fpo = np.float64()
-        self.fpn = np.float64()
         self.h = h
 
+
     def calculate_alphas(self):
-        self.alphas[0] = (3*(self.a[1] - self.a[0])/self.h) - 3*self.fpo
-        self.alphas[self.n] = 3*self.fpn - 3*(self.a[self.n] - self.a[self.n - 1])/self.h
+        self.alphas[0] = (3*(self.a[1] - self.a[0]))/self.h - 3*self.fpo
+        self.alphas[self.n] = 3*self.fpn - (3*(self.a[self.n] - self.a[self.n - 1]))/self.h
         for i in range(1, self.n):
             self.alphas[i] = (3*(self.a[i + 1] - self.a[i]))/self.h  -  (3*(self.a[i] - self.a[i - 1]))/self.h
 
@@ -51,7 +49,7 @@ class Spline:
 
             self.b[j] = (self.a[j + 1] - self.a[j])/self.h - (self.h*(self.c[j + 1] + 2*self.c[j]))/3
 
-            self.d[j] = (self.c[j + 1] - self.c[j])/3*self.h
+            self.d[j] = (self.c[j + 1] - self.c[j])/(3*self.h)
 
     def interpolate(self):
         self.a = self.y
@@ -66,24 +64,32 @@ class Spline:
         indice = ((xi - self.x[0]) // self.h).astype(int)
         return self.sj(xi, indice)
 
-    def plot(self, exact_f=None, N=10000):
-        x_values = np.linspace(self.x[0], self.x[self.n], N)
+    def plot(self, title="Interpolação por splines cúbicas", var_name='f',
+             show_markers=True, show_legend=False, line_interpolation=False, exact_f=None, N=10):
+        x_values = np.linspace(self.x[0], self.x[self.n], (N+1)*self.n + 1)
         y_values = self.s(x_values)
         plots = [
-            go.Scatter(name=f'interpolação', x=x_values, y=y_values, mode='lines',
-                        showlegend=True)
+            go.Scatter(name=f'Interpolação, s(t)', x=x_values, y=y_values, mode='markers' if not line_interpolation else 'lines',
+                        showlegend=show_legend, line=dict(color='black', shape='linear')),
         ]
+
+        if show_markers:
+            plots.append(go.Scatter(name=f'Valores reais', x=self.x, y=self.y, mode='markers',
+                        showlegend=True != None, marker=dict(symbol='diamond', color='black', size=8)),)
         
         if exact_f is not None:
             plots.append(
-                go.Scatter(name=f'função exata', x=x_values, y=exact_f(x_values), mode='lines',
-                        showlegend=True, line=dict(dash='dash'))
+                go.Scatter(name=f'Função exata {var_name}(t)', x=x_values, y=exact_f(x_values), mode='lines',
+                        showlegend=True, line=dict(dash='dash', color='black'))
             )
 
         fig = go.Figure(plots)
         fig.update_layout(
             width=800, 
             height=500, 
-            title=f'Interpolação por splines cúbicas', yaxis_title='s(t)', xaxis_title='t'
+            title=title,
+            plot_bgcolor='rgba(0,0,0,0)'
         )
+        fig.update_xaxes(ticks='inside', showline=True, linewidth=1, linecolor='black', mirror=True, title='t')
+        fig.update_yaxes(ticks='inside', showline=True, linewidth=1, linecolor='black', mirror=True, title=f's(t)')
         fig.show()

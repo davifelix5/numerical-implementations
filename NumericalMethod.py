@@ -156,17 +156,12 @@ class NumericalMethod:
         amount_of_state_vars = self.y_0.shape[0]
         plots = [go.Figure() for _ in range(amount_of_state_vars)]
         dashs = ['1, 10',
-            '1, 1',
-            '10, 3',
             '5, 10',
             '5, 5',
-            '5, 1',
             '3, 10, 1, 10',
             '3, 5, 1, 5',
-            '3, 1, 1, 1',
             '3, 5, 1, 5, 1, 5',
             '3, 10, 1, 10, 1, 10',
-            '3, 1, 1, 1, 1, 1'
         ]
 
         for i in range(n_loops):
@@ -245,4 +240,5 @@ def convert_dict_to_latex(convergence_data: list):
         final_str = '{:5d} & {:.3e}'.format(*value[:2])
         for data in zip_longest(value[2], value[3], fillvalue=0):
             final_str += ('& {:.3e}'*len(data)).format(*data)
+        final_str += r'\\'
         print(final_str)
