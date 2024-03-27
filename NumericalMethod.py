@@ -93,7 +93,7 @@ class NumericalMethod:
                 logs.append(np.log(q)/np.log(r))
         return list(zip(n_values, h_values, numerical_solutions, logs))
     
-    def plot_solutions(self, exact_function: Union[List[Callable], None]=None):
+    def plot_solutions(self, exact_function: Union[List[Callable], None]=None, i=None):
         """
         Função que plota a solução numérica encontrada pelo método. Caso seja fornecida uma solução exata,
         ela também é plotada com sua respetiva leganda.
@@ -115,13 +115,14 @@ class NumericalMethod:
                 plots[k].append(go.Scatter(name='Exact Solution', x=x, y=exact_function[k](x),
                                           mode='lines', showlegend=True, line=dict(dash='dash', color='black'),
                                           opacity=0.8))
-            fig = go.Figure(plots[k])
-            fig.update_layout(yaxis_title='y(t)',
-                              title=f'Aproximação numérica para {self.var_names[k]}(t)',
-                              width=850, height=500, plot_bgcolor='rgba(0,0,0,0)')
-            fig.update_yaxes(ticks='inside', showline=True, linewidth=1, linecolor='black', mirror=True, title=f'{self.var_names[k]}(t)')
-            fig.update_xaxes(ticks='inside', showline=True, linewidth=1, linecolor='black', mirror=True, title='t')
-            fig.show()
+            if not i or k in i:
+                fig = go.Figure(plots[k])
+                fig.update_layout(yaxis_title='y(t)',
+                                  title=f'Aproximação numérica para {self.var_names[k]}(t)',
+                                  width=850, height=500, plot_bgcolor='rgba(0,0,0,0)')
+                fig.update_yaxes(ticks='inside', showline=True, linewidth=1, linecolor='black', mirror=True, title=f'{self.var_names[k]}(t)')
+                fig.update_xaxes(ticks='inside', showline=True, linewidth=1, linecolor='black', mirror=True, title='t')
+                fig.show()
 
     def plot_solutions_plt(self, exact_function: Union[List[Callable], None]=None):
         """
